@@ -25,6 +25,7 @@ GuzzleHttp\Client,
 GuzzleHttp\Exception\RequestException,
 GuzzleHttp\Psr7\Response,
 GuzzleHttp\Psr7;
+use \League\OAuth2\Client\Token\AccessToken;
 
 /**
  * A class that represents a Bibliographic Resource in WorldCat
@@ -77,11 +78,11 @@ class Bib extends EasyRdf_Resource
      * Find and retrieve a Bib by OCLC Number
      * 
      * @param $id string
-     * @param $accessToken OCLC/Auth/AccessToken
+     * @param $accessToken \League\OAuth2\Client\Token\AccessToken
      * @param $options array
      * @return WorldCat\Discovery\Bib or \Guzzle\Http\Exception\BadResponseException
      */
-    public static function find($id, $accessToken, $options = null)
+    public static function find($id, \League\OAuth2\Client\Token\AccessToken $accessToken, $options = null)
     {
         $validRequestOptions = array(
         	'useFRBRGrouping' => 'string'
@@ -99,8 +100,6 @@ class Bib extends EasyRdf_Resource
         
         if (!is_numeric($id)){
             Throw new \BadMethodCallException('You must pass a valid ID');
-        } elseif (!is_a($accessToken, '\OCLC\Auth\AccessToken')) {
-            Throw new \BadMethodCallException('You must pass a valid OCLC/Auth/AccessToken object');
         }
         
         static::requestSetup();
@@ -125,7 +124,7 @@ class Bib extends EasyRdf_Resource
     
     /**
      * @param $query string
-     * @param $accessToken OCLC/Auth/AccessToken
+     * @param $accessToken \League\OAuth2\Client\Token\AccessToken
      * @param $options array All the optional parameters are valid
      * - dbIds array which is the databases to search within. If not set defaults to 638 WorldCat.org
      * - sortBy string which is how to sort results.
@@ -155,7 +154,7 @@ class Bib extends EasyRdf_Resource
      * @return WorldCat\Discovery\SearchResults or \Guzzle\Http\Exception\BadResponseException
      */
     
-    public static function search($query, $accessToken, $options = null)
+    public static function search($query, \League\OAuth2\Client\Token\AccessToken $accessToken, $options = null)
     {
         $validRequestOptions = array(
 				'dbIds' => 'array', 
@@ -195,8 +194,6 @@ class Bib extends EasyRdf_Resource
         
         if (!is_string($query)){
             Throw new \BadMethodCallException('You must pass a valid query');
-        } elseif (!is_a($accessToken, '\OCLC\Auth\AccessToken')) {
-            Throw new \BadMethodCallException('You must pass a valid OCLC/Auth/AccessToken object');
         } elseif ((isset($requestOptions['lat']) || isset($requestOptions['lon']) || isset($requestOptions['distance']) || isset($requestOptions['unit'])) && !($requestOptions['lat'] && $requestOptions['lon'] && $requestOptions['distance'] && $requestOptions['unit'] )){
             Throw new \BadMethodCallException('If you are searching by holding in a radius, lat, lon, distance, and unit options are required');
         }

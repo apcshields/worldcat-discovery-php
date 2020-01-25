@@ -173,7 +173,7 @@ trait Helpers {
         );
         
         if (isset($options['accessToken'])){
-        	$headers['Authorization'] = 'Bearer ' . $options['accessToken']->getValue();
+        	$headers['Authorization'] = 'Bearer ' . $options['accessToken']->getToken();
         }
         
         $guzzleOptions = array(
